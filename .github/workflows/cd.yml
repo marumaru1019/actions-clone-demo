@@ -22,8 +22,11 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Bicepファイルのデプロイ
-        run: |
-          az deployment group create --resource-group rg-actions-demo --template-file main.bicep
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            az deployment group create --resource-group rg-actions-demo --template-file main.bicep
+          azPSVersion: "latest"
 
       - name: アプリケーションのパッケージ化
         run: |
