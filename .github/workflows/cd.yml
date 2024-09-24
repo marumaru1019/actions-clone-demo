@@ -1,0 +1,45 @@
+# .github/workflows/cd.yml
+name: CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: チェックアウト
+      uses: actions/checkout@v3
+
+    - name: Azure CLIセットアップ
+      uses: azure/setup-azure-cli@v3
+
+    - name: Azureにログイン
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: リソースグループの存在確認
+      id: check_rg
+      run: |
+        exists=$(az group exists --name rg-actions-demo)
+        echo "exists=$exists" >> $GITHUB_OUTPUT
+
+    - name: リソースグループの作成
+      if: steps.check_rg.outputs.exists != 'true'
+      run: |
+        az group create --name rg-actions-demo --location EastUS
+
+    - name: Bicepファイルのデプロイ
+      run: |
+        az deployment group create --resource-group rg-actions-demo --template-file main.bicep
+
+    - name: アプリケーションのパッケージ化
+      run: |
+        zip -r app.zip .
+
+    - name: Azure App Serviceへのデプロイ
+      run: |
+        az webapp deployment source config-zip --resource-group rg-actions-demo --name app-actions-sample --src ./app.zip
