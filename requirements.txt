@@ -2,5 +2,5 @@ fastapi
 uvicorn
 pytest
 httpx
-gunicorn
+gunicorn==20.1.0
 uvicorn[standard]
