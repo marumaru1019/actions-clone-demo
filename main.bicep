@@ -7,7 +7,7 @@ param appServicePlanName string = 'ActionsAppServicePlan'
 param enablePublicNetworkAccess bool = true
 
 // App Service Plan
-resource appServicePlan 'Microsoft.Web/serverfarms@2023-06-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: appServicePlanName
   location: location
   sku: {
@@ -17,7 +17,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-06-01' = {
 }
 
 // Web App
-resource webApp 'Microsoft.Web/sites@2023-06-01' = {
+resource webApp 'Microsoft.Web/sites@2023-12-01' = {
   name: webAppName
   location: location
   kind: 'app,linux'
@@ -28,7 +28,7 @@ resource webApp 'Microsoft.Web/sites@2023-06-01' = {
 }
 
 // Site Configuration
-resource siteConfig 'Microsoft.Web/sites/config@2023-06-01' = {
+resource siteConfig 'Microsoft.Web/sites/config@2023-12-01' = {
   name: '${webAppName}/web'
   properties: {
     linuxFxVersion: 'PYTHON|3.11'
